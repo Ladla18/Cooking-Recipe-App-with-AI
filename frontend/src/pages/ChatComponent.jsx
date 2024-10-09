@@ -34,7 +34,7 @@ const ChatComponent = () => {
 
   const handleButtonClick = async () => {
     setLoading(true);
-    const apiKey = "YOUR_API_KEY"; // Use your actual API key here
+    const apiKey = "AIzaSyCzerf_FpTVuwyZMrnrM7QBuZCRva_Zlnk"; // Use your actual API key here
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
     const data = {
