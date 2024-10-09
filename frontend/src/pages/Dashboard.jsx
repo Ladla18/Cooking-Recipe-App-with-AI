@@ -177,6 +177,7 @@ const Dashboard = () => {
               <h2 className="text-2xl font-semibold mb-6">
                 Live Cooking Sessions By Top Chefs
               </h2>
+              <p className="bg-green-700 mb-10 text-white ps-10 rounded-lg py-2">This Feature is coming Soon ... </p>
               <div className="space-y-4">
                 {sessions.map((session) => (
                   <div
