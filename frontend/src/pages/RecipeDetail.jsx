@@ -1,14 +1,19 @@
 import React from "react";
-import { Clock, Users, ChefHat, ArrowLeft } from "lucide-react";
-
+import { Clock, Users, ChefHat, ArrowLeft, Scale } from "lucide-react";
+import {motion} from "framer-motion"
 const RecipeDetails = ({ recipe, onClose }) => {
   if (!recipe) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0,x:500 }}
+      animate={{  opacity: 1 , x:0}} // Set a value that covers the full height
+      transition={{ duration: 0.4 }}
+      className="bg-white rounded-lg shadow-lg overflow-hidden"
+    >
       <div className="relative h-64 bg-orange-100">
         <img
-          src="/api/placeholder/800/400"
+          src={recipe.images}
           alt={recipe.title}
           className="w-full h-full object-cover"
         />
@@ -71,7 +76,7 @@ const RecipeDetails = ({ recipe, onClose }) => {
           <p className="text-gray-600">{recipe.notes}</p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

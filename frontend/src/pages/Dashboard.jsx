@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Search, User, Book, Video, Utensils, Bell, Menu ,Pin} from "lucide-react"; // Ensure you import Menu for the burger icon
+import React, { useState, useEffect,useRef } from "react";
+import {
+  Search,
+  User,
+  Book,
+  Video,
+  Utensils,
+  Bell,
+  Menu,
+} from "lucide-react"; // Ensure you import Menu for the burger icon
 import RecipeDetails from "./RecipeDetail";
 import { allRecipes } from "../assets/recipes";
 import { sessions } from "../assets/sessions";
 import ChatComponent from "./ChatComponent";
+import { motion } from "framer-motion";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("recipes");
@@ -11,10 +20,7 @@ const Dashboard = () => {
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar visibility
-
-
-  
-  
+  const scrollableDivRef = useRef(null);
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase();
     const filtered = allRecipes.filter(
@@ -32,7 +38,21 @@ const Dashboard = () => {
 
   const handleRecipeClick = (recipe) => {
     setSelectedRecipe(recipe);
+      if (scrollableDivRef.current) {
+        scrollableDivRef.current.scrollTo({
+          top: 0,
+        });
+      }
+    
   };
+  const scrollToTop = ()=>{
+    console.log("scrolltooto")
+    if (scrollableDivRef.current) {
+        scrollableDivRef.current.scrollTo({
+          top: 0,
+        });
+      }
+  }
 
   const handleCloseRecipeDetails = () => {
     setSelectedRecipe(null);
@@ -41,10 +61,7 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const deleteRecipe = ()=>{
-    console.log("Recipe Deleted")
-    localStorage.removeItem("");
-  }
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -65,6 +82,7 @@ const Dashboard = () => {
             onClick={() => {
               setActiveTab("recipes");
               setSidebarOpen(false); // Close the sidebar on menu item click
+              
             }}
           >
             <Book className="mr-3" size={20} />
@@ -78,6 +96,7 @@ const Dashboard = () => {
             onClick={() => {
               setActiveTab("sessions");
               setSidebarOpen(false); // Close the sidebar on menu item click
+              scrollToTop();
             }}
           >
             <Video className="mr-3" size={20} />
@@ -96,7 +115,6 @@ const Dashboard = () => {
             <Utensils className="mr-3" size={20} />
             AI Assistant
           </a>
-         
         </nav>
       </div>
 
@@ -131,7 +149,7 @@ const Dashboard = () => {
         </header>
 
         {/* Dashboard Content */}
-        <main className="p-8 overflow-auto h-[calc(100vh-70px)]">
+        <main ref={scrollableDivRef} className="p-8 overflow-auto h-[calc(100vh-70px)]">
           {activeTab === "recipes" && (
             <div>
               <h2 className="text-2xl font-semibold mb-6">Recipe Library</h2>
@@ -145,14 +163,34 @@ const Dashboard = () => {
                   No recipes found. Try a different search term.
                 </p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    visible: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: 0.1, // Delay between each element
+                      },
+                    },
+                    hidden: { opacity: 0 },
+                  }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
                   {filteredRecipes.map((recipe) => (
-                    <div
+                    <motion.div
+                      variants={{
+                        visible: { opacity: 1, y: 0, scale: 1 },
+                        hidden: { opacity: 0, y: 50, scale: 0.5 },
+                      }}
+                      transition={{ duration: 0.1 }}
                       key={recipe.id}
                       className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition duration-200"
                       onClick={() => handleRecipeClick(recipe)}
                     >
-                      <div className="h-48 bg-gray-300"></div>
+                      <div className="h-64 bg-gray-300">
+                        <img src={recipe.images} className="h-full w-full object-cover" alt="" />
+                      </div>
                       <div className="p-4">
                         <h3 className="font-semibold text-lg mb-2">
                           {recipe.title}
@@ -165,9 +203,9 @@ const Dashboard = () => {
                           <span>{recipe.difficulty}</span>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               )}
             </div>
           )}
@@ -177,10 +215,29 @@ const Dashboard = () => {
               <h2 className="text-2xl font-semibold mb-6">
                 Live Cooking Sessions By Top Chefs
               </h2>
-              <p className="bg-green-700 mb-10 text-white ps-10 rounded-lg py-2">This Feature is coming Soon ... </p>
-              <div className="space-y-4">
+              <p className="bg-green-700 mb-10 text-white ps-10 rounded-lg py-2">
+                This Feature is coming Soon ...{" "}
+              </p>
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.1,
+                    },
+                  },
+                  hidden: { opacity: 0 },
+                }}
+                className="space-y-4"
+              >
                 {sessions.map((session) => (
-                  <div
+                  <motion.div
+                    variants={{
+                      visible: { opacity: 1, y: 0 },
+                      hidden: { opacity: 0, y: 20 },
+                    }}
                     key={session.id}
                     className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center cursor-pointer"
                   >
@@ -198,9 +255,9 @@ const Dashboard = () => {
                         Starts at {session.startTime}
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           )}
 
@@ -219,8 +276,6 @@ const Dashboard = () => {
               </div>
             </div>
           )}
-
-         
         </main>
       </div>
     </div>
